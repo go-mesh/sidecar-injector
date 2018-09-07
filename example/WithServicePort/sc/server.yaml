@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: server-mesher
+  annotations:
+    sidecar.mesher.io/inject: "yes"
+    sidecar.mesher.io/servicePorts: rest:9999
+    sidecar.mesher.io/discoveryType: "sc"
+  labels:
+    app: default
+spec:
+  containers:
+    - name: server
+      image: savita3020/server-io-go
+      imagePullPolicy: Always
+      ports:
+        - containerPort: 9999
+---
+apiVersion: v1
+kind: Service
+apiVersion: v1
+metadata:
+  name: server-mesher
+spec:
+  selector:
+    app: default
+  ports:
+  - protocol: TCP
+    name: http
+    port: 9999

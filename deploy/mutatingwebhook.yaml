@@ -1,0 +1,22 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: sidecar-injector-webhook-mesher-cfg
+  labels:
+    app: sidecar-injector
+webhooks:
+  - name: sidecar-injector.mesher.io
+    clientConfig:
+      service:
+        name: sidecar-injector-webhook-mesher-svc
+        namespace: chassis
+        path: "/webhookmutation"
+      caBundle: ""
+    rules:
+      - operations: [ "CREATE" ]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    namespaceSelector:
+      matchLabels:
+        sidecar-injector: enabled

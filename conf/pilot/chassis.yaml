@@ -1,0 +1,24 @@
+---
+cse:
+  protocols:
+    http:
+      listenAddress: 127.0.0.1:30101
+  credentials:
+    accessKey:
+    secretKey:
+  service:
+    registry:
+      refeshInterval : 30s
+      registrator:
+        disabled: true
+      contractDiscovery:
+        disabled: true
+      serviceDiscovery:
+        type: pilot
+        address: http://istio-pilot.istio-system:8080
+  handler:
+    chain:
+      Consumer:
+        outgoing: router, ratelimiter-consumer, bizkeeper-consumer, loadbalance, port-selector, transport
+      Provider:
+        incoming:  #provider handlers

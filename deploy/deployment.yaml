@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: sidecar-injector-webhook-mesher-deployment
+  labels:
+    app: sidecar-injector
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sidecar-injector
+    spec:
+      serviceAccountName: mesher-sidecar-injector-service-account
+      containers:
+        - name: sidecar-injector
+          image: gochassis/sidecar-injector:latest
+          imagePullPolicy: Always
+          args:
+            - -sidecarCfgFile=/etc/webhook/mesher/config/sidecar_k8s_spec.yaml
+            - -tlsCertFile=/etc/webhook/mesher/certs/ca-cert.pem
+            - -tlsKeyFile=/etc/webhook/mesher/certs/ca-key.pem
+            - -caFile=/etc/webhook/mesher/certs/root-cert.pem
+            - -healthCheckInterval=2s
+            - -healthCheckFile=/tmp/healthy
+            - -alsologtostderr
+            - -v=4
+            - 2>&1
+#            - /bin/bash
+#            - -c
+#            - sleep 30; rm -rf /tmp/healthy; sleep 600 --- This is to verify liveness and readiness functionality.
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /etc/webhook/mesher/certs
+              readOnly: true
+            - name: webhook-config
+              mountPath: /etc/webhook/mesher/config
+          livenessProbe:
+            exec:
+              command:
+                - cat
+                - /tmp/healthy
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - cat
+                - /tmp/healthy
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: sidecar-injector-webhook-mesher-certs
+        - name: webhook-config
+          configMap:
+            name: sidecar-injector-webhook-mesher-configmap

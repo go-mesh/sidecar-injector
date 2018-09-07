@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: mesher-sidecar-injector-admin-role-binding-mesher-system
+  labels:
+    app: mesher-sidecar-injector
+    chart: sidecarInjectorWebhook-1.0.0
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: mesher-sidecar-injector-mesher-system
+subjects:
+  - kind: ServiceAccount
+    name: mesher-sidecar-injector-service-account
+    namespace: chassis

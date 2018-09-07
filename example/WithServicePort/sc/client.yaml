@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client-mesher
+  annotations:
+    sidecar.mesher.io/inject: "yes"
+    sidecar.mesher.io/discoveryType: "sc"
+  labels:
+    app: default
+spec:
+  containers:
+    - name: client
+      image: savita3020/client-go:latest
+      imagePullPolicy: Always
+      env:
+        - name: TARGET
+          value: http://server-mesher/
+        - name: http_proxy
+          value: http://127.0.0.1:30101/
+      ports:
+        - containerPort: 9000
+---
+apiVersion: v1
+kind: Service
+apiVersion: v1
+metadata:
+  name: client-mesher
+spec:
+  selector:
+    app: default
+  ports:
+  - protocol: TCP
+    name: http
+    port: 30107
+    nodePort: 30107
+    targetPort: 9000
+  type: NodePort

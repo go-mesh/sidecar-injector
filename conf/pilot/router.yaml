@@ -1,0 +1,4 @@
+---
+router:
+  infra: pilot
+  address: http://istio-pilot.istio-system:15010
