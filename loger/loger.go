@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ServiceComb/go-chassis/core/lager"
 	log "github.com/Sirupsen/logrus"
+	"github.com/go-chassis/go-chassis/core/lager"
 )
 
 var (

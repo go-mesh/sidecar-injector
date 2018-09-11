@@ -84,3 +84,6 @@ import:
 - package: golang.org/x/text
   version: b19bf474d317b857955b12035d2c5acb57ce8b01
   repo: https://github.com/golang/text
+- package: github.com/go-chassis/go-chassis
+  version: 32140e4c9732de2c99c9f5f0647eff081ecf7cee
+  repo: https://github.com/go-chassis/go-chassis
