@@ -14,7 +14,7 @@ spec:
       serviceAccountName: mesher-sidecar-injector-service-account
       containers:
         - name: sidecar-injector
-          image: gochassis/sidecar-injector:latest
+          image: gomesh/sidecar-injector:latest
           imagePullPolicy: Always
           args:
             - -sidecarCfgFile=/etc/webhook/mesher/config/sidecar_k8s_spec.yaml
@@ -35,6 +35,8 @@ spec:
               readOnly: true
             - name: webhook-config
               mountPath: /etc/webhook/mesher/config
+            - name: mesher-conf
+              mountPath: /sc
           livenessProbe:
             exec:
               command:
@@ -56,3 +58,6 @@ spec:
         - name: webhook-config
           configMap:
             name: sidecar-injector-webhook-mesher-configmap
+        - name: mesher-conf
+          configMap:
+            name: mesher-configmap

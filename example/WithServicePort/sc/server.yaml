@@ -8,6 +8,7 @@ metadata:
     sidecar.mesher.io/discoveryType: "sc"
   labels:
     app: default
+    name: server
 spec:
   containers:
     - name: server
@@ -24,6 +25,7 @@ metadata:
 spec:
   selector:
     app: default
+    name: server
   ports:
   - protocol: TCP
     name: http

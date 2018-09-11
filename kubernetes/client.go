@@ -57,7 +57,7 @@ func CreateClientSet(kubeconfig string) (kubernetes.Interface, error) {
 	return client, nil
 }
 
-// UpdateConfigMap function is used to update the conf file.
+// UpdateConfigMap function is used to update the conf file, injector will create one if the configmap does not exist.
 func UpdateConfigMap(k kubernetes.Interface, conf, ns string) error {
 	var (
 		cConf []byte
@@ -71,30 +71,41 @@ func UpdateConfigMap(k kubernetes.Interface, conf, ns string) error {
 		return err
 	}
 
+	fInfo, err := ioutil.ReadDir(conf)
+	if err != nil {
+		return err
+	}
+
+	cObj.Name = "mesher-configmap"
+	cObj.Namespace = ns
+	cObj.Kind = "ConfigMap"
+	cObj.APIVersion = "v1"
+	cObj.Data = make(map[string]string)
+	for _, f := range fInfo {
+		if f.IsDir() {
+			continue
+		}
+		cConf, err = ioutil.ReadFile(conf + f.Name())
+		if err != nil {
+			return err
+		}
+		cObj.Data[f.Name()] = string(cConf)
+	}
+
+	var needCreate = true
 	for _, cm := range cList.Items {
 		if cm.Name == "mesher-configmap" {
-			cObj.Name = "mesher-configmap"
-			cObj.Namespace = ns
-			cObj.Kind = "ConfigMap"
-			cObj.APIVersion = "v1"
-			cObj.Data = make(map[string]string)
-
-			fInfo, err := ioutil.ReadDir(conf)
-			if err != nil {
-				return err
-			}
-
-			for _, f := range fInfo {
-				cConf, err = ioutil.ReadFile(conf + f.Name())
-				if err != nil {
-					return err
-				}
-				cObj.Data[f.Name()] = string(cConf)
-			}
+			needCreate = false
+			break
 		}
 	}
 
-	configMap, err := k.CoreV1().ConfigMaps(ns).Update(&cObj)
+	var configMap *v1.ConfigMap
+	if needCreate {
+		configMap, err = k.CoreV1().ConfigMaps(ns).Create(&cObj)
+	} else {
+		configMap, err = k.CoreV1().ConfigMaps(ns).Update(&cObj)
+	}
 	if err != nil {
 		return err
 	}
