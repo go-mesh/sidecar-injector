@@ -5,6 +5,7 @@ set -x
 glide install
 rm -rf vendor/k8s.io/apiextensions-apiserver/vendor/k8s.io/apiserver/pkg/util/feature/
 rm -rf vendor/k8s.io/kubernetes/vendor/k8s.io
+rm -rf vendor/github.com/ServiceComb/*
 
 appname="sidecar-injector"
 
