@@ -12,4 +12,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: mesher-sidecar-injector-service-account
-    namespace: chassis
+    namespace: servicecomb

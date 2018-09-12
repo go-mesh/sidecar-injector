@@ -11,77 +11,17 @@ data:
           listenAddress: 127.0.0.1:30101
       service:
         registry:
-          type: servicecenter
-          scope: full
-          address: https://cse.cn-north-1.myhwclouds.com:443
-          refeshInterval : 30s
-          watch: true
-          tenant: default
+          refreshInterval: 10s
+          registrator:
+            disabled: true
+          serviceDiscovery:
+            type: servicecenter
+            address: http://service-center.servicecomb:30100
       config:
         client:
-          #serverUri: http://127.0.0.1:30103
           type: config_center			# config_center/apollo
-          #serverUri: https://cse.cn-north-1.myhwclouds.com:443
+          #serverUri: http://127.0.0.1:30103
           refreshMode: 1
           refreshInterval: 30
           tenantName:  default
           autodiscovery: false
-          serviceName: XXXXXX			#Required only for Apollo
-          env: XXXXX				#Required only for Apollo
-          cluster: XXXX				#Required only for Apollo
-          namespace: XXXX				#Required only for Apollo
-          token: XXXXXXXXXXXXX			#Required only for Apollo
-    ssl:
-      test.consumer.cipherPlugin:
-      test.consumer.verifyPeer:
-      test.consumer.verifyCN:
-      test.consumer.cipherSuits:
-      test.consumer.protocol:
-      test.consumer.caFile:
-      test.consumer.certFile: server.cer
-      test.consumer.keyFile:
-      test.consumer.certPwdFile: cert_pwd
-
-      registrator.Consumer.cipherPlugin: default
-      registrator.Consumer.verifyPeer: false
-      registrator.Consumer.cipherSuits: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-      registrator.Consumer.protocol: TLSv1.2
-      registrator.Consumer.caFile:
-      registrator.Consumer.certFile:
-      registrator.Consumer.keyFile:
-      registrator.Consumer.certPwdFile:
-
-      serviceDiscovery.Consumer.cipherPlugin: default
-      serviceDiscovery.Consumer.verifyPeer: false
-      serviceDiscovery.Consumer.cipherSuits: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-      serviceDiscovery.Consumer.protocol: TLSv1.2
-      serviceDiscovery.Consumer.caFile:
-      serviceDiscovery.Consumer.certFile:
-      serviceDiscovery.Consumer.keyFile:
-      serviceDiscovery.Consumer.certPwdFile:
-
-      contractDiscovery.Consumer.cipherPlugin: default
-      contractDiscovery.Consumer.verifyPeer: false
-      contractDiscovery.Consumer.cipherSuits: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-      contractDiscovery.Consumer.protocol: TLSv1.2
-      contractDiscovery.Consumer.caFile:
-      contractDiscovery.Consumer.certFile:
-      contractDiscovery.Consumer.keyFile:
-      contractDiscovery.Consumer.certPwdFile:
-
-      configcenter.Consumer.cipherPlugin: default
-      configcenter.Consumer.verifyPeer: false
-      configcenter.Consumer.cipherSuits: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-      configcenter.Consumer.protocol: TLSv1.2
-      configcenter.Consumer.caFile:
-      configcenter.Consumer.certFile:
-      configcenter.Consumer.keyFile:
-      configcenter.Consumer.certPwdFile:
-  auth.yaml: |
-    ---
-    cse:
-      credentials:
-        accessKey:
-        secretKey:
-        project:
-        akskCustomCipher: default #used to decrypt sk when it is encrypted

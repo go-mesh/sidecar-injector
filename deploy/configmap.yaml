@@ -6,7 +6,7 @@ data:
   sidecar_k8s_spec.yaml: |
     containers:
       - name: sidecar-mesher
-        image: savita3020/mesher:v5
+        image: gomesh/mesher:latest
         imagePullPolicy: Always
         env:
           - name: SERVICE_NAME

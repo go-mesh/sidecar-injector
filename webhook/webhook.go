@@ -354,7 +354,7 @@ func (wh *WebHookServer) mutation(ar *v1beta1.AdmissionReview) *v1beta1.Admissio
 	if annotationValue == "pilot" {
 		err := kubernetes.UpdateConfigMap(k, pilotConf, req.Namespace)
 		if err != nil {
-			log.Errorf("Update configmap failed with error: ", err)
+			log.Errorf("Update configmap failed with error: %s", err)
 		}
 
 		log.Infof("configmap updated successfully")
@@ -363,7 +363,7 @@ func (wh *WebHookServer) mutation(ar *v1beta1.AdmissionReview) *v1beta1.Admissio
 	if annotationValue == "sc" {
 		err := kubernetes.UpdateConfigMap(k, scConf, req.Namespace)
 		if err != nil {
-			log.Errorf("Update configmap failed with error: ", err)
+			log.Errorf("Update configmap failed with error: %s", err)
 		}
 
 		log.Infof("configmap updated successfully")
