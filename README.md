@@ -1,4 +1,4 @@
-# sidecar-injector  
+# sidecar-injector
 [![Build Status](https://travis-ci.org/go-mesh/sidecar-injector.svg?branch=master)](https://travis-ci.org/go-mesh/sidecar-injector)
 
 ## Need to update the license file
@@ -29,29 +29,29 @@ Output should be:
 ```
 
 Follow [admission controller](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#how-do-i-turn-on-an-admission-controller)
-If enable-admission-plugins has not been enabled or it doesnot contain the MutatingAdmissionWebhook and ValidatingAdmissionWebhook 
+If enable-admission-plugins has not been enabled or it doesnot contain the MutatingAdmissionWebhook and ValidatingAdmissionWebhook
 
 ## Quick Start
 
 ```
 bash -x install.sh
 
-kubectl label namespace chassis sidecar-injector=enabled
+kubectl label namespace default sidecar-injector=enabled
 [root@mstnode ~]# kubectl get namespace -L sidecar-injector
 NAME          STATUS    AGE       SIDECAR-INJECTOR
-default       Active    18h
+default       Active    18h       enabled
 kube-public   Active    18h
 kube-system   Active    18h
-chassis       Active    3m        enabled
+servicecomb   Active    3m
 
 ## Verify
 
-cd example/sc
+cd example/WithoutServicePort/sc
 
-kubectl create -f client.yaml -n chassis
-kubectl create -f server.yaml -n chassis
+kubectl create -f client.yaml
+kubectl create -f server.yaml
 
-kubectl get pods -n chassis
+kubectl get pods
 
 NAME                   READY     STATUS    RESTARTS   AGE
 client-mesher          2/2       Running   0          33s
@@ -63,17 +63,17 @@ server-mesher          2/2       Running   0          12s
 
 1. Setup dependency
 
-   The repo use glide as the dependency management tool for its Go codebase. 
+   The repo use glide as the dependency management tool for its Go codebase.
 To Install `glide` follow [glide](https://github.com/Masterminds/glide)
 
 2. Build binary, image and push to docker hub
 
 ```
-1. clone sidecar-injector code 
+1. clone sidecar-injector code
 
 2. setup a GOPATH
 
-3. cd sidecar-injector 
+3. cd sidecar-injector
 
 4. bash -x build.sh
 ```
@@ -84,31 +84,31 @@ To Install `glide` follow [glide](https://github.com/Masterminds/glide)
 bash -x install.sh
 ```
 
-## Enable sidecar-injector for namespace on which sidecar pod has been deployed
+## Enable sidecar-injector for namespace on pod has been deployed
 
 1. The sidecar injector webhook should be running
 ```
-[root@mstnode ~]# kubectl get pods -n chassis
+[root@mstnode ~]# kubectl get pods -n servicecomb
 NAME                                                          READY     STATUS    RESTARTS   AGE
 sidecar-injector-webhook-mesher-deployment-8576646db8-x6f56   1/1       Running   0          20s
 
-[root@mstnode ~]# kubectl get deployment -n chassis
+[root@mstnode ~]# kubectl get deployment -n servicecomb
 NAME                                         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 sidecar-injector-webhook-mesher-deployment   1         1         1            1           1m
 ```
 
-2. Label the chassis namespace with `sidecar-injector=enabled`
+2. Label the default namespace with `sidecar-injector=enabled`
 ```
-kubectl label namespace chassis sidecar-injector=enabled
+kubectl label namespace default sidecar-injector=enabled
 [root@mstnode ~]# kubectl get namespace -L sidecar-injector
 NAME          STATUS    AGE       SIDECAR-INJECTOR
-default       Active    18h
+default       Active    18h       enabled
 kube-public   Active    18h
 kube-system   Active    18h
-chassis      Active    3m        enabled
+servicecomb   Active    3m
 ```
 
-## Deploy example 
+## Deploy example
 
 1. Deploy an app in Kubernetes cluster, take `client` app as an example
 
@@ -118,7 +118,6 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: client
-  namespace: chassis
   annotations:
     sidecar.mesher.io/inject: "yes"
   labels:
@@ -142,7 +141,7 @@ EOF
 
 1. Verify sidecar container injected
 ```
-[root@mstnode ~]# kubectl get pods -n chassis
+[root@mstnode ~]# kubectl get pods
 NAME            READY     STATUS    RESTARTS   AGE
 client          2/2       Running   0          12s
 ```
@@ -151,3 +150,4 @@ client          2/2       Running   0          12s
 ```
 bash -x uninstall.sh
 ```
+
