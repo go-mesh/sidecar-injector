@@ -9,6 +9,7 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"os"
+	"strings"
 )
 
 // CreateClient function is used to create a client for k8s and returns interface
@@ -82,7 +83,8 @@ func UpdateConfigMap(k kubernetes.Interface, conf, ns string) error {
 	cObj.APIVersion = "v1"
 	cObj.Data = make(map[string]string)
 	for _, f := range fInfo {
-		if f.IsDir() {
+		if f.IsDir() || strings.LastIndex(f.Name(), ".yaml") < 0 {
+			log.Infof("%s is not a yaml format file", f.Name())
 			continue
 		}
 		cConf, err = ioutil.ReadFile(conf + f.Name())

@@ -46,7 +46,10 @@ const (
 )
 
 const (
-	servicePorts = "SERVICE_PORTS"
+	envServicePorts = "SERVICE_PORTS"
+	envServiceName  = "SERVICE_NAME"
+	labelAppName    = "app"
+	sidecarName     = "sidecar-mesher"
 )
 
 //WebHookServer which has config contents
@@ -369,11 +372,29 @@ func (wh *WebHookServer) mutation(ar *v1beta1.AdmissionReview) *v1beta1.Admissio
 		log.Infof("configmap updated successfully")
 	}
 
+	// Update the serviceName
+	if app, ok := pod.Labels[labelAppName]; ok {
+		for i, k := range wh.SidecarConfig.Containers {
+			if k.Name == sidecarName {
+				for j, env := range k.Env {
+					if env.Name == envServiceName {
+						env.Value = app
+						env.ValueFrom = nil
+						k.Env[j] = env
+						wh.SidecarConfig.Containers[i] = k
+						break
+					}
+				}
+				break
+			}
+		}
+	}
+
 	// This sidecar container will be common to consumer and provider
 	// So before proceeding first check the env "SERVICE_PORTS". If its present delete the env
 	for k := range wh.SidecarConfig.Containers {
 		for i := range wh.SidecarConfig.Containers[k].Env {
-			if wh.SidecarConfig.Containers[k].Env[i].Name == servicePorts {
+			if wh.SidecarConfig.Containers[k].Env[i].Name == envServicePorts {
 				wh.SidecarConfig.Containers[k].Env = append(wh.SidecarConfig.Containers[k].Env[0:i], wh.SidecarConfig.Containers[k].Env[i:]...)
 			}
 		}
@@ -383,7 +404,7 @@ func (wh *WebHookServer) mutation(ar *v1beta1.AdmissionReview) *v1beta1.Admissio
 	sVal := getAnnotations(&pod.ObjectMeta, servicePortsAnnotationKey)
 	if sVal != "" {
 		for c := range wh.SidecarConfig.Containers {
-			wh.SidecarConfig.Containers[c].Env = append(wh.SidecarConfig.Containers[c].Env, corev1.EnvVar{Name: servicePorts, Value: sVal})
+			wh.SidecarConfig.Containers[c].Env = append(wh.SidecarConfig.Containers[c].Env, corev1.EnvVar{Name: envServicePorts, Value: sVal})
 		}
 	}
 
