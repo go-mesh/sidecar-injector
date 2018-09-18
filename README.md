@@ -138,6 +138,9 @@ spec:
 EOF
 ```
 
+Notes: The injector will use label `app` value as the microservice name,
+if the metadata does not set the label `app`, injector will use the `Pod` name by default.
+
 ## Verification
 
 1. Verify sidecar container injected

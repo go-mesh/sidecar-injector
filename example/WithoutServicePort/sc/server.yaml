@@ -6,7 +6,7 @@ metadata:
     sidecar.mesher.io/inject: "yes"
     sidecar.mesher.io/discoveryType: "sc"
   labels:
-    app: default
+    app: server-mesher
 spec:
   containers:
     - name: server
@@ -22,7 +22,7 @@ metadata:
   name: server-mesher
 spec:
   selector:
-    app: default
+    app: server-mesher
   ports:
   - protocol: TCP
     name: http

@@ -7,7 +7,7 @@ metadata:
     sidecar.mesher.io/servicePorts: rest:9999
     sidecar.mesher.io/discoveryType: "pilot"
   labels:
-    app: default
+    app: server-mesher
 spec:
   containers:
     - name: server
@@ -23,7 +23,7 @@ metadata:
   name: server-mesher
 spec:
   selector:
-    app: default
+    app: server-mesher
   ports:
   - protocol: TCP
     name: http
